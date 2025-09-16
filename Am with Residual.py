@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# ---------------- Channel Attention ---------------- #
 class ChannelAttention(nn.Module):
     def __init__(self, in_channels, reduction=16, use_linear=False, bias=True):
         super().__init__()
@@ -33,7 +32,7 @@ class ChannelAttention(nn.Module):
             max_out = self.fc(self.max_pool(x))
             out = avg_out + max_out
         return self.sigmoid(out) * x
-# ---------------- Spatial Attention ---------------- #
+
 class SpatialAttention(nn.Module):
     def __init__(self, kernel_size=7):
         super().__init__()
@@ -46,7 +45,7 @@ class SpatialAttention(nn.Module):
         out = torch.cat([avg_out, max_out], dim=1)
         out = self.conv(out)
         return self.sigmoid(out) * x
-# ---------------- CBAM Block ---------------- #
+
 class CBAMBlock(nn.Module):
     def __init__(self, in_channels, reduction=16, kernel_size=7):
         super().__init__()
@@ -57,7 +56,7 @@ class CBAMBlock(nn.Module):
         out = self.channel_att(x)
         out = self.spatial_att(out)
         return out
-# ---------------- Residual Block with CBAM ---------------- #
+
 class ResidualCBAMBlock(nn.Module):
     def __init__(self, in_channels, out_channels, reduction=16, kernel_size=7):
         super().__init__()
@@ -74,7 +73,7 @@ class ResidualCBAMBlock(nn.Module):
         out += residual       # Residual connection
         out = F.relu(out)
         return out
-# ---------------- Test ---------------- #
+
 if __name__ == "__main__":
     x = torch.randn(1, 64, 128, 128)  # Example input
     block = ResidualCBAMBlock(64, 64)
