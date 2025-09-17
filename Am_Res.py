@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class ChannelAttention(nn.Module):
-    def __init__(self, in_channels, reduction=16, use_linear=False, bias=True):
+    def __init__(self, in_channels, reduction=16, use_linear=False, bias=False):
         super().__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.max_pool = nn.AdaptiveMaxPool2d(1)
