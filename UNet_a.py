@@ -3,6 +3,9 @@ import torch.nn as nn
 
 from unet_parts import DoubleConv, Downsample, UpSample
 
+import torch as t
+import torch.nn as nn
+
 class unet(nn.Module):
     def __init__(self, in_channel, num_classes):
         super().__init__()
@@ -12,6 +15,13 @@ class unet(nn.Module):
         self.down_conv4 = Downsample(in_channel=256, out_channel=512)
 
         self.bottble_neck = DoubleConv(in_channel=512, out_channels=1024)
+        self.ResidualCBAMBlock=ResidualCBAMBlock(in_channels=1024,out_channels=1024)
+        
+        self.CBAMBlock1 = CBAMBlock(64)    
+        self.CBAMBlock2 = CBAMBlock(128)   
+        self.CBAMBlock3 = CBAMBlock(256)   
+        self.CBAMBlock4 = CBAMBlock(512)   
+
 
         self.up_conv1 = UpSample(in_channel=1024, out_channel=512)
         self.up_conv2 = UpSample(in_channel=512, out_channel=256)
@@ -28,15 +38,19 @@ class unet(nn.Module):
         conv4, p4 = self.down_conv4(p3)
         
         btl_nk = self.bottble_neck(p4)
+        res= self.ResidualCBAMBlock(btl_nk)
 
+        conv4 = self.CBAMBlock4(conv4)
         up1 = self.up_conv1(btl_nk, conv4)
+        conv3 = self.CBAMBlock3(conv3)
         up2 = self.up_conv2(up1, conv3)
+        conv2 = self.CBAMBlock2(conv2)
         up3 = self.up_conv3(up2, conv2)
+        conv1 = self.CBAMBlock1(conv1)
         up4 = self.up_conv4(up3, conv1)
 
         out = self.out(up4)
         act_out = self.act(out)
-
         return act_out
     
 if __name__ == "__main__":
