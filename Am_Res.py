@@ -68,13 +68,13 @@ class ResidualCBAMBlock(nn.Module):
         residual = x
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        out = self.cbam(out)  # Apply CBAM after conv layers
-        out += residual       # Residual connection
+        out = self.cbam(out)
+        out += residual      
         out = F.relu(out)
         return out
 
 if __name__ == "__main__":
-    x = torch.randn(1, 64, 128, 128)  # Example input
+    x = torch.randn(1, 64, 128, 128) 
     block = ResidualCBAMBlock(64, 64)
     y = block(x)
     print(y.shape)
