@@ -27,12 +27,19 @@ class Downsample(nn.Module):
         return conv, pool
     
 class UpSample(nn.Module):
-    def __init__(self, in_channel, out_channel):
+    def __init__(self, in_channel, out_channel,attention_residual=True):
         super().__init__()
         self.up = nn.ConvTranspose2d(in_channel, in_channel//2, kernel_size=(2,2), stride=2)
         self.conv = DoubleConv(in_channel, out_channel)
+        self.attention_residual = attention_residual
+        
+        if attention_residual:
+            self.res = ResidualCBAMBlock(out_channel,out_channel)
 
     def forward(self, x1, x2):
         x1 = self.up(x1)
         x = t.cat([x1, x2], 1)
-        return self.conv(x)
+        x = self.conv(x)
+        if self.attention_residual:
+            x = self.res(x)
+        return x
