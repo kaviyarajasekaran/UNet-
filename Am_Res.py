@@ -38,7 +38,6 @@ class SpatialAttention(nn.Module):
         super().__init__()
         self.conv = nn.Conv2d(2, 1, kernel_size, padding=(kernel_size-1)//2, bias=False)
         self.sigmoid = nn.Sigmoid()
-
     def forward(self, x):
         avg_out = torch.mean(x, dim=1, keepdim=True)
         max_out, _ = torch.max(x, dim=1, keepdim=True)
