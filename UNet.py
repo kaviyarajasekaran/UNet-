@@ -1,6 +1,8 @@
 import torch as t
 import torch.nn as nn
 from Am_Res import ResidualCBAMBlock, CBAMBlock
+from unet_parts import DoubleConv, Downsample, UpSample
+
 class unet(nn.Module):
     def __init__(self, in_channel, num_classes):
         super().__init__()
