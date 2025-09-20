@@ -7,9 +7,8 @@ class FocalLoss(nn.Module):
         self.alfa = alfa
         self.gamma = gamma
 
-    def forward(self, y_truth, y_pred):
+    def forward(self, y_pred, y_truth):
         y_truth = y_truth.float()
-        y_pred = y_pred.float()
         pt = t.where(y_truth == 1, y_pred, 1 - y_pred)
         alfa = t.where(y_truth == 1, self.alfa, 1 - self.alfa)
         pt = t.clamp(pt, min=1e-5)
