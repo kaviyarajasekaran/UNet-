@@ -9,6 +9,7 @@ from zipfile import ZipFile
 from unet import unet
 import torch.nn.functional as F
 from dataset import PartDrawingDataset
+from Loss_function import FocalLoss
 
 if __name__ == "__main__":
     lr = 1e-4
