@@ -10,6 +10,13 @@ from unet import unet
 import torch.nn.functional as F
 from dataset import PartDrawingDataset
 
+if __name__ == "__main__":
+    lr = 1e-4
+    batch_size = 8
+    EPOCHS = 30
+    root = "Part_Drawing_2k/dataset"
+    device = 'cuda' if t.cuda.is_available() else 'cpu'
+    
 train_transform = transforms.Compose([
     transforms.Resize((512,512)),
     transforms.RandomHorizontalFlip(p=0.5),
@@ -24,7 +31,6 @@ val_transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-root = "Part_Drawing_2k/dataset"
 full_dataset = PartDrawingDataset(
     os.path.join(root,"X"),
     os.path.join(root,"Y"),
@@ -38,15 +44,14 @@ train_set, val_set = random_split(full_dataset, [train_size, val_size])
 train_set.dataset.transform = train_transform
 val_set.dataset.transform = val_transform
 
-train_loader = DataLoader(train_set, batch_size=8, shuffle=True)
-val_loader = DataLoader(val_set, batch_size=8)
+train_loader = DataLoader(train_set, batch_size, shuffle=True)
+val_loader = DataLoader(val_set, batch_size)
 
 model = unet( in_channel=1, num_classes=1).to(device)
 criterion = FocalLoss(alfa=0.75, gamma=2)
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+optimizer = optim.Adam(model.parameters(), lr)
 
 scaler = torch.amp.GradScaler()
-EPOCHS = 30
 for epoch in range(EPOCHS):
     model.train()
     train_loss = 0.0
