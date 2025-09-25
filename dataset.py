@@ -23,6 +23,6 @@ class PartDrawingDataset(Dataset):
 
     
 if __name__ == "__main__":
-    data = seg_dataset(r'D:\Part_Drawing_2k.zip\dataset')
+    data = PartDrawingDataset(r'D:\Part_Drawing_2k.zip\dataset')
     print(data)
     print(len(data))
