@@ -8,6 +8,7 @@ from PIL import Image
 from zipfile import ZipFile
 from unet import unet
 import torch.nn.functional as F
+from dataset import PartDrawingDataset
 
 train_transform = transforms.Compose([
     transforms.Resize((512,512)),
